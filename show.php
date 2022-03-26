@@ -6,7 +6,7 @@ $obj = new Database();
 $data = $obj->select('users');
 if(isset($_POST['id'])){
     if($obj->delete('users',$_POST['id'])){
-        echo "Record has been delete";
+        header('Location: '.$_SERVER['REQUEST_URI']);
     }else{
         echo "Record has not been delete";
     }
@@ -54,7 +54,7 @@ if(isset($_POST['id'])){
                         <td><?= $value['phone'] ?></td>
                         <td><?= $value['email'] ?></td>
                         <td>
-                            <a href="#" class="btn btn-info">Edit</a>
+                            <a href="update.php?id=<?=$value['id'];?>" class="btn btn-info">Edit</a>
                             <form action="" class="my-2" method="post">
                                 <input type="hidden" name="id" value="<?= $value['id'] ?>">
                                 <button type="submit" onclick="return confirm('Are you sure want to delete')" name="submit" class="btn btn-primary">Delete</button>

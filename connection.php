@@ -48,17 +48,51 @@ class Database
                 array_push($this->result, $this->mysqli->error);
                 return false;
             }
+        } else {
+            return false;
         }
     }
-    public function update()
+    public function update($table, $params = array(), $where = null)
     {
+        if ($this->isTableExists($table)) {
+            $args = array();
+            foreach ($params as $key => $val) {
+                $args[] = "$key = '$val'";
+            }
+
+            $sql = "UPDATE $table SET " . implode(', ', $args) . " ";
+            if ($where != null) {
+                $sql .= "WHERE $where";
+            }
+            $res = $this->mysqli->query($sql);
+            if ($res) {
+                header("location: show.php");
+            } else {
+                return false;
+            }
+        }
+    }
+    public function show_update($table, $where = null)
+    {
+        if ($this->isTableExists($table)) {
+            $sql = "SELECT * FROM $table";
+            if ($where != null) {
+                $sql .= " WHERE $where";
+            }
+            $result = $this->mysqli->query($sql);
+            return $result->fetch_assoc();
+        }
     }
     public function delete($table, $record_id)
     {
-        $sql = "DELETE FROM $table WHERE `$table`.`id` = $record_id";
-        $result = $this->mysqli->query($sql);
-        if ($result) {
-            return true;
+        if ($this->isTableExists($table)) {
+            $sql = "DELETE FROM $table WHERE `$table`.`id` = $record_id";
+            $result = $this->mysqli->query($sql);
+            if ($result) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
